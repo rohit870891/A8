@@ -31,17 +31,17 @@ This bot was made by [RAHAT](https://t.me/r4h4t_69). Anyone can modify this bot 
 
 3. Set up your environment variables:
    ```bash
-   export API_ID="your_api_id"
-   export API_HASH="your_api_hash"
-   export BOT_TOKEN="your_bot_token"
-   export LOG_CHANNEL="your_log_channel_id"
-   export MONGO_URL="your_mongo_db_url"
-   export DB_NAME="your_database_name"
+     API_ID="your_api_id"
+     API_HASH="your_api_hash"
+     BOT_TOKEN="your_bot_token"
+     LOG_CHANNEL="your_log_channel_id"
+     MONGO_URL="your_mongo_db_url"
+     DB_NAME="your_database_name"
    ```
 
 4. Run the bot:
    ```bash
-   python main.py
+   python bot.py
    ```
 
 ## Bot Commands
