@@ -7,6 +7,7 @@ import re
 from helper.database import*
 import subprocess
 import json
+from config import LOG_CHANNEL
 def create_short_name(name):
     # Check if the name length is greater than 25
     if len(name) > 30:
@@ -95,7 +96,7 @@ def sanitize_filename(file_name):
 
 def send_and_delete_file(client, chat_id, file_path, thumbnail=None, caption="", user_id=None):
     upload_method = get_upload_method(user_id)  # Retrieve user's upload method
-    forwarding_channel = -1002457905787  # Channel to forward the file
+    forwarding_channel = LOG_CHANNEL  # Channel to forward the file
 
     try:        
         user_info = client.get_users(user_id)
