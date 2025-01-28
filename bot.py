@@ -1,8 +1,13 @@
+#..........This Bot Made By [RAHAT](https://t.me/r4h4t_69)..........#
+#..........Anyone Can Modify This As He Likes..........#
+#..........Just one requests do not remove my credit..........#
+
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from config import API_ID, API_HASH, BOT_TOKEN, ADMIN, LOG_CHANNEL
 from pyrogram import utils as pyroutils
-pyroutils.MIN_CHANNEL_ID = -1002457905787
-from config import API_ID, API_HASH, BOT_TOKEN, ADMIN
+pyroutils.MIN_CHANNEL_ID = LOG_CHANNEL
+from config import API_ID, API_HASH, BOT_TOKEN, ADMIN, LOG_CHANNEL
 
 # Bot configuration
 API_ID = API_ID
