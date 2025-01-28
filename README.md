@@ -20,8 +20,8 @@ This bot was made by [RAHAT](https://t.me/r4h4t_69). Anyone can modify this bot 
 ## How to Deploy
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-repo/animepahebot.git
-   cd animepahebot
+   git clone https://github.com/your-repo/TG_AnimePahe_BOT.git
+   cd TG_AnimePahe_BOT
    ```
 
 2. Install the required dependencies:
