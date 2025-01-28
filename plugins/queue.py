@@ -1,3 +1,6 @@
+#..........This Bot Made By [RAHAT](https://t.me/r4h4t_69)..........#
+#..........Anyone Can Modify This As He Likes..........#
+#..........Just one requests do not remove my credit..........#
 from collections import deque
 from threading import Lock
 
