@@ -10,6 +10,6 @@ pymongo
 tgcrypto
 #...For Grabbing Episode Information...#
 ffprobe
-#...For Web App (Remove Bellow 2 Requirements If You Deploy It As Work)...#
+#...For Web App (Remove Bellow 2 Requirements If You Deploy It As Worker)...#
 flask # Only if you deploy it as wev service 
 gunicorn # Only if you deploy it as wev service 
