@@ -1,0 +1,13 @@
+version: "3.12"
+
+services:
+  app:
+    container_name: AP
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python bot.py
+    restart: on-failure
+    ports:
+      - "10:10"
+      - "1010:1010"
