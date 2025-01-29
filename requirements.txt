@@ -1,6 +1,15 @@
+#...For Bot Library...#
 pyrogram
+#...For Web Scraping...#
 bs4==0.0.2
+#...For Handling Requests...#
 requests==2.31.0
+#...For Database...#
 pymongo
+#...For Enhancing Bot Performance...#
 tgcrypto
+#...For Grabbing Episode Information...#
 ffprobe
+#...For Web App (Remove Bellow 2 Requirements If You Deploy It As Work)...#
+flask # Only if you deploy it as wev service 
+gunicorn # Only if you deploy it as wev service 
