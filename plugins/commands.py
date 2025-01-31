@@ -5,6 +5,7 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 import pyrogram.errors
+from bs4 import BeautifulSoup
 from plugins.headers import*
 from helper.database import*
 from plugins.queue import*
@@ -281,6 +282,42 @@ def send_latest_anime(client, message):
     
     except Exception as e:
         client.send_message(-1002457905787, f"Error: {e}")
+        message.reply_text("Something went wrong. Please try again later.")
+
+
+@Client.on_message(filters.command("airing") & filters.private)
+def send_latest_anime(client, message):
+    try:
+        # Fetch the latest airing anime from AnimePahe
+        API_URL = "https://animepahe.ru/anime/airing"
+        response = session.get(API_URL)
+        if response.status_code == 200:          
+            soup = BeautifulSoup(response.text, "html.parser")
+
+            # Find all anime links
+            anime_list = soup.select(".index-wrapper .index a")
+
+            # Check if any anime is available
+            if not anime_list:
+                message.reply_text("No airing anime available at the moment.")
+                return
+
+            # Prepare the message content with titles and links
+            airing_anime_text = "<b>🎬 Currently Airing Anime:</b>\n\n"
+            for idx, anime in enumerate(anime_list, start=1):
+                title = anime.get("title", "Unknown Title")
+                link = "https://animepahe.ru" + anime["href"]
+                #airing_anime_text += f"<b>{idx}) <a href='{link}'>{title}</a></b>\n"
+                airing_anime_text += f"<b>{idx}){title}</b>\n"
+
+            # Send the formatted anime list with clickable links
+            message.reply_text(airing_anime_text, disable_web_page_preview=True)
+        else:
+            message.reply_text(f"Failed to fetch data. Status Code: {response.status_code}")
+
+    except Exception as e:
+        # Log the error and notify the user
+        #client.send_message(-1002457905787, f"Error: {e}")
         message.reply_text("Something went wrong. Please try again later.")
 
         
