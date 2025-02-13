@@ -16,6 +16,8 @@ A fully customizable Telegram bot for anime lovers. You can use it to search, do
 
 ## Owner Credit
 This bot was made by [RAHAT](https://t.me/r4h4t_69). Anyone can modify this bot as they like, but please do not remove the credit.
+Re- Modified By [N-SUDY](https://github.com/N-SUDY).
+
 
 ## How to Deploy
 1. Clone the repository:
