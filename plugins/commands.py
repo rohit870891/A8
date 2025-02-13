@@ -9,12 +9,11 @@ from bs4 import BeautifulSoup
 from plugins.headers import*
 from helper.database import*
 from plugins.queue import*
-from config import START_PIC, ADMIN
+from config import START_PIC, ADMIN, LOG_CHANNEL
 import random
 import asyncio
 
 user_queries = {}
-
 
 @Client.on_message(filters.command("start") & filters.private)
 def start(client, message):
@@ -23,9 +22,6 @@ def start(client, message):
     if not present_user(id):
         try:
             add_user(id)
-        except Exception as e:
-            client.send_message(-1002457905787, f"{e}")
-            pass
     start_pic = random.choice(START_PIC)
     
     # Create inline buttons
