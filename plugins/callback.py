@@ -3,14 +3,14 @@
 #..........Just one requests do not remove my credit..........#
 
 from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, InputMediaPhoto
 from plugins.queue import add_to_queue, remove_from_queue
 from plugins.kwik import extract_kwik_link
 from plugins.direct_link import get_dl_link
-from plugins.headers import*
-from plugins.file import*
+from plugins.headers import *
+from plugins.file import *
 from plugins.commands import user_queries
-from helper.database import*
+from helper.database import *
 from config import DOWNLOAD_DIR
 from bs4 import BeautifulSoup
 import re
@@ -60,10 +60,8 @@ def anime_details(client, callback_query):
     }
 
     episode_button = InlineKeyboardMarkup([[InlineKeyboardButton("Episodes", callback_data="episodes")]])
-    client.send_photo(
-        chat_id=callback_query.message.chat.id,
-        photo=poster_url,
-        caption=message_text,
+    callback_query.message.edit_media(
+        media=InputMediaPhoto(media=poster_url, caption=message_text),
         reply_markup=episode_button
     )
 # Callback for episode list with pagination (send buttons once)
@@ -110,7 +108,7 @@ def episode_list(client, callback_query, page=1):
 
     # If it's the first time, send a message, otherwise edit the existing one
     if callback_query.message.reply_markup is None:
-        callback_query.message.reply_text(f"Page {page}/{last_page}: Select an episode:", reply_markup=reply_markup)
+        callback_query.message.edit_text(f"Page {page}/{last_page}: Select an episode:", reply_markup=reply_markup)
     else:
         callback_query.message.edit_reply_markup(reply_markup)
 
@@ -134,7 +132,7 @@ def navigate_pages(client, callback_query):
         callback_query.answer("You're already on the last page.", show_alert=True)
     else:
         # Call the episode list function with the new page number, but edit the message
-        episode_list(client, callback_query, page=new_page)
+        episode_list(client, callback_query, new_page)
 
 
 # Callback for episode link and fetching download links
@@ -157,7 +155,7 @@ def fetch_download_links(client, callback_query):
         return
 
     # Store episode number for the user
-    episode_data[user_id]['current_episode'] = episode_number  # Add this line
+    episode_data[user_id]['current_episode'] = episode_number
 
     episode_session = episodes[episode_number]
     episode_url = f"https://animepahe.ru/play/{session_id}/{episode_session}"
@@ -178,8 +176,13 @@ def fetch_download_links(client, callback_query):
         [InlineKeyboardButton(link.get_text(strip=True), callback_data=f"dl_{link['href']}")]
         for link in download_links
     ]
+    
+    # Add back button to go back to episode list
+    back_button = [InlineKeyboardButton("⬅️ Back to Episodes", callback_data="episodes")]
+    download_buttons.append(back_button)
+    
     reply_markup = InlineKeyboardMarkup(download_buttons)
-    callback_query.message.reply_text("Select a download link:", reply_markup=reply_markup)
+    callback_query.message.edit_text("Select a download link:", reply_markup=reply_markup)
 
 @Client.on_callback_query(filters.regex(r"set_method_"))
 def change_upload_method(client, callback_query):
