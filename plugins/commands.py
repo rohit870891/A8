@@ -15,14 +15,14 @@ user_queries = {}
 
 
 @Client.on_message(filters.command("start") & filters.private)
-def start(client, message):
+async def start(client, message):
     # Choose a random image from the list
     id = message.from_user.id
     if not present_user(id):
         try:
             add_user(id)
         except Exception as e:
-            client.send_message(-1002457905787, f"{e}")
+            await client.send_message(-1002457905787, f"{e}")  # Use await
             pass
     start_pic = random.choice(START_PIC)
     
@@ -39,7 +39,7 @@ def start(client, message):
     reply_markup = InlineKeyboardMarkup(buttons)
     
     # Send the welcome message with the random image and inline buttons
-    client.send_photo(
+    await client.send_photo(  # Use await here
         chat_id=message.chat.id,
         photo=start_pic,
         caption="👋 Welcome to the Anime PaheBot! \n\nUse the buttons below for assistance or to contact the owner",
