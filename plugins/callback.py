@@ -72,7 +72,7 @@ async def episode_list(client, callback_query, page=1):
     session_data = episode_data.get(callback_query.message.chat.id)
 
     if not session_data:
-        callback_query.message.reply_text("Session ID not found.")
+        await callback_query.message.reply_text("Session ID not found.")
         return
 
     session_id = session_data['session_id']
@@ -110,9 +110,9 @@ async def episode_list(client, callback_query, page=1):
 
     # If it's the first time, send a message, otherwise edit the existing one
     if callback_query.message.reply_markup is None:
-        callback_query.message.reply_text(f"Page {page}/{last_page}: Select an episode:", reply_markup=reply_markup)
+        await callback_query.message.reply_text(f"Page {page}/{last_page}: Select an episode:", reply_markup=reply_markup)
     else:
-        callback_query.message.edit_reply_markup(reply_markup)
+        await callback_query.message.edit_reply_markup(reply_markup)
 
 # Callback to handle navigation between pages (edit buttons in place)
 @Client.on_callback_query(filters.regex(r"^page_"))
@@ -121,7 +121,7 @@ async def navigate_pages(client, callback_query):
     session_data = episode_data.get(callback_query.message.chat.id)
 
     if not session_data:
-        callback_query.message.reply_text("Session ID not found.")
+        await callback_query.message.reply_text("Session ID not found.")
         return
 
     current_page = session_data.get('current_page', 1)
@@ -129,12 +129,12 @@ async def navigate_pages(client, callback_query):
 
     # Check if the user is trying to go beyond the first or last page
     if new_page < 1:
-        callback_query.answer("You're already on the first page.", show_alert=True)
+        await callback_query.answer("You're already on the first page.", show_alert=True)
     elif new_page > last_page:
-        callback_query.answer("You're already on the last page.", show_alert=True)
+        await callback_query.answer("You're already on the last page.", show_alert=True)
     else:
         # Call the episode list function with the new page number, but edit the message
-        episode_list(client, callback_query, page=new_page)
+        await episode_list(client, callback_query, page=new_page)
 
 
 # Callback for episode link and fetching download links
@@ -146,14 +146,14 @@ async def fetch_download_links(client, callback_query):
     session_data = episode_data.get(user_id)
 
     if not session_data or 'episodes' not in session_data:
-        callback_query.message.reply_text("Episode not found.")
+        await callback_query.message.reply_text("Episode not found.")
         return
 
     session_id = session_data['session_id']
     episodes = session_data['episodes']
 
     if episode_number not in episodes:
-        callback_query.message.reply_text("Episode not found.")
+        await callback_query.message.reply_text("Episode not found.")
         return
 
     # Store episode number for the user
@@ -170,7 +170,7 @@ async def fetch_download_links(client, callback_query):
     download_links = soup.select("#pickDownload a.dropdown-item")
 
     if not download_links:
-        callback_query.message.reply_text("No download links found.")
+        await callback_query.message.reply_text("No download links found.")
         return
 
     # Create buttons for each download link
@@ -179,7 +179,7 @@ async def fetch_download_links(client, callback_query):
         for link in download_links
     ]
     reply_markup = InlineKeyboardMarkup(download_buttons)
-    callback_query.message.reply_text("Select a download link:", reply_markup=reply_markup)
+    await callback_query.message.reply_text("Select a download link:", reply_markup=reply_markup)
 
 @Client.on_callback_query(filters.regex(r"set_method_"))
 async def change_upload_method(client, callback_query):
@@ -190,7 +190,7 @@ async def change_upload_method(client, callback_query):
     save_upload_method(user_id, data)
     
     # Acknowledge the change
-    callback_query.answer(f"Upload method set to {data.capitalize()}")
+    await callback_query.answer(f"Upload method set to {data.capitalize()}")
     
     # Update the buttons with the new selection
     document_status = "✅" if data == "document" else "❌"
@@ -204,7 +204,7 @@ async def change_upload_method(client, callback_query):
     ]
     
     reply_markup = InlineKeyboardMarkup(buttons)
-    callback_query.message.edit_reply_markup(reply_markup)
+    await callback_query.message.edit_reply_markup(reply_markup)
 
 
 @Client.on_callback_query(filters.regex(r"^dl_"))
@@ -215,7 +215,7 @@ async def download_and_upload_file(client, callback_query):
     try:
         direct_link = get_dl_link(kwik_link)
     except Exception as e:
-        callback_query.message.reply_text(f"Error generating download link: {str(e)}")
+        await callback_query.message.reply_text(f"Error generating download link: {str(e)}")
         return
     username = callback_query.from_user.username or "Unknown User"
     user_id = callback_query.from_user.id
@@ -253,21 +253,21 @@ async def download_and_upload_file(client, callback_query):
     download_path = os.path.join(user_download_dir, file_name)
 
     #callback_query.message.reply_text(f"Added to queue: {file_name}. Downloading now...")
-    #dl_msg = callback_query.message.reply_text(f"<b>Added to queue:</b>\n <pre language="python">{file_name}</pre>\n<b>Downloading now...</b>")
-    dl_msg = callback_query.message.reply_text(f"<b>Added to queue:</b>\n <pre>{file_name}</pre>\n<b>Downloading now...</b>")
+    #dl_msg = await callback_query.message.reply_text(f"<b>Added to queue:</b>\n <pre language="python">{file_name}</pre>\n<b>Downloading now...</b>")
+    dl_msg = await callback_query.message.reply_text(f"<b>Added to queue:</b>\n <pre>{file_name}</pre>\n<b>Downloading now...</b>")
     
     try:
         # Download the file
         download_file(direct_link, download_path)
         #callback_query.message.reply_text("File downloaded, uploading...")
-        dl_msg.edit("<b>Episode downloaded, uploading...</b>")
+        await dl_msg.edit("<b>Episode downloaded, uploading...</b>")
 
         # Fetch thumbnail
         user_thumbnail = get_thumbnail(user_id)
         poster_url = episode_data.get(user_id, {}).get("poster", None)
 
         if user_thumbnail:
-            thumb_path = client.download_media(user_thumbnail)
+            thumb_path = await client.download_media(user_thumbnail)
         elif poster_url:
             response = requests.get(poster_url, stream=True)
             thumb_path = f"{user_download_dir}/thumb_file.jpg"
@@ -278,13 +278,13 @@ async def download_and_upload_file(client, callback_query):
             thumb_path = None
 
         # Send the file
-        user_caption = get_caption(user_id)
+        user_caption = await get_caption(user_id)
         caption_to_use = user_caption if user_caption else file_name        
 
-        send_and_delete_file(client, callback_query.message.chat.id, download_path, thumb_path, caption_to_use, user_id)
+        await send_and_delete_file(client, callback_query.message.chat.id, download_path, thumb_path, caption_to_use, user_id)
         # Remove the thumbnail file if it was downloaded
         remove_from_queue(user_id, direct_link)
-        dl_msg.edit(f"<b><pre>Episode Uploaded 🎉</pre></b>")
+        await dl_msg.edit(f"<b><pre>Episode Uploaded 🎉</pre></b>")
         if thumb_path and os.path.exists(thumb_path):
             os.remove(thumb_path)
         if user_download_dir and os.path.exists(user_download_dir):
@@ -298,11 +298,11 @@ async def download_and_upload_file(client, callback_query):
 async def callback_query_handler(client, callback_query):
     if callback_query.data == "help":
         # Send the help message
-        callback_query.message.edit_text(
+        await callback_query.message.edit_text(
             text="Here is how to use the bot:\n\n1. /anime <anime_name> - Search for an anime.\n2. /set_thumb - Set a custom thumbnail.\n3. /options - Set upload options (Document or Video).\n4. /queue - View active downloads.\n5. /set_caption - Set custom caption.\n6. /see_caption - See current custom caption.\n7. /del_caption - Delect current custom caption",
             reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Close", callback_data="close")]])
         )
     
     elif callback_query.data == "close":
         # Close the panel by deleting the message
-        callback_query.message.delete()
+        await callback_query.message.delete()
