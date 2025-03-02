@@ -46,7 +46,7 @@ async def anime_details(client, callback_query):
         f"Score: {score}\n"
         f"[Anime Link]({anime_link})\n\n"
         f"Bot Made By\n"
-        f"    **[RAHAT](https://t.me/rohit_1888/3)"
+        f"    [ROHIT](https://t.me/rohit_1888/3)"
     )
 
     # Store the session_id for episodes
