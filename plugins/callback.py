@@ -267,7 +267,7 @@ async def download_and_upload_file(client, callback_query):
         poster_url = episode_data.get(user_id, {}).get("poster", None)
 
         if user_thumbnail:
-            thumb_path = await client.download_media(user_thumbnail)
+            thumb_path = client.download_media(user_thumbnail)
         elif poster_url:
             response = requests.get(poster_url, stream=True)
             thumb_path = f"{user_download_dir}/thumb_file.jpg"
