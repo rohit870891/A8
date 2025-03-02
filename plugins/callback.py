@@ -68,7 +68,7 @@ async def anime_details(client, callback_query):
 
 # Callback for episode list with pagination (send buttons once)
 @Client.on_callback_query(filters.regex(r"^episodes$"))
-def episode_list(client, callback_query, page=1):
+async def episode_list(client, callback_query, page=1):
     session_data = episode_data.get(callback_query.message.chat.id)
 
     if not session_data:
@@ -116,7 +116,7 @@ def episode_list(client, callback_query, page=1):
 
 # Callback to handle navigation between pages (edit buttons in place)
 @Client.on_callback_query(filters.regex(r"^page_"))
-def navigate_pages(client, callback_query):
+async def navigate_pages(client, callback_query):
     new_page = int(callback_query.data.split("_")[1])
     session_data = episode_data.get(callback_query.message.chat.id)
 
@@ -139,7 +139,7 @@ def navigate_pages(client, callback_query):
 
 # Callback for episode link and fetching download links
 @Client.on_callback_query(filters.regex(r"^ep_"))
-def fetch_download_links(client, callback_query):
+async def fetch_download_links(client, callback_query):
     episode_number = int(callback_query.data.split("_")[1])
     user_id = callback_query.message.chat.id  # Unique per user
     
@@ -182,7 +182,7 @@ def fetch_download_links(client, callback_query):
     callback_query.message.reply_text("Select a download link:", reply_markup=reply_markup)
 
 @Client.on_callback_query(filters.regex(r"set_method_"))
-def change_upload_method(client, callback_query):
+async def change_upload_method(client, callback_query):
     user_id = callback_query.from_user.id
     data = callback_query.data.split("_")[2]  # Extract 'document' or 'video'
     
@@ -208,7 +208,7 @@ def change_upload_method(client, callback_query):
 
 
 @Client.on_callback_query(filters.regex(r"^dl_"))
-def download_and_upload_file(client, callback_query):
+async def download_and_upload_file(client, callback_query):
     download_url = callback_query.data.split("dl_")[1]
     kwik_link = extract_kwik_link(download_url)
 
@@ -295,7 +295,7 @@ def download_and_upload_file(client, callback_query):
 
 # Callback query handler for Help and Close buttons
 @Client.on_callback_query()
-def callback_query_handler(client, callback_query):
+async def callback_query_handler(client, callback_query):
     if callback_query.data == "help":
         # Send the help message
         callback_query.message.edit_text(
