@@ -17,14 +17,14 @@ episode_data = {}
 episode_urls = {}
 
 @Client.on_callback_query(filters.regex(r"^anime_"))
-def anime_details(client, callback_query):
+async def anime_details(client, callback_query):
     session_id = callback_query.data.split("anime_")[1]
 
     # Retrieve the query stored earlier
     query = user_queries.get(callback_query.message.chat.id, "")
     search_url = f"https://animepahe.ru/api?m=search&q={query.replace(' ', '+')}"
     response = session.get(search_url).json()
-    
+
     anime = next(anime for anime in response['data'] if anime['session'] == session_id)
     title = anime['title']
     anime_type = anime['type']
@@ -53,16 +53,19 @@ def anime_details(client, callback_query):
     episode_data[callback_query.message.chat.id] = {
         "session_id": session_id,
         "poster": poster_url,
-        "title": title        # Store the poster URL here
+        "title": title  # Store the poster URL here
     }
 
     episode_button = InlineKeyboardMarkup([[InlineKeyboardButton("Episodes", callback_data="episodes")]])
-    client.send_photo(
+
+    # ✅ Use `await` for async function
+    await client.send_photo(
         chat_id=callback_query.message.chat.id,
         photo=poster_url,
         caption=message_text,
         reply_markup=episode_button
     )
+
 # Callback for episode list with pagination (send buttons once)
 @Client.on_callback_query(filters.regex(r"^episodes$"))
 def episode_list(client, callback_query, page=1):
