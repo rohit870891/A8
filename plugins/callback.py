@@ -1,6 +1,3 @@
-#..........This Bot Made By [RAHAT](https://t.me/r4h4t_69)..........#
-#..........Anyone Can Modify This As He Likes..........#
-#..........Just one requests do not remove my credit..........#
 
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
@@ -40,16 +37,16 @@ def anime_details(client, callback_query):
     anime_link = f"https://animepahe.ru/anime/{session_id}"
 
     message_text = (
-        f"**Title**: {title}\n"
-        f"**Type**: {anime_type}\n"
-        f"**Episodes**: {episodes}\n"
-        f"**Status**: {status}\n"
-        f"**Season**: {season}\n"
-        f"**Year**: {year}\n"
-        f"**Score**: {score}\n"
+        f"Title: {title}\n"
+        f"Type: {anime_type}\n"
+        f"Episodes: {episodes}\n"
+        f"Status: {status}\n"
+        f"Season: {season}\n"
+        f"Year: {year}\n"
+        f"Score: {score}\n"
         f"[Anime Link]({anime_link})\n\n"
-        f"**Bot Made By**\n"
-        f"    **[RAHAT](tg://user?id=1235222889)**"
+        f"Bot Made By\n"
+        f"    **[RAHAT](https://t.me/rohit_1888/3)"
     )
 
     # Store the session_id for episodes
