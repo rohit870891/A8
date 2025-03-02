@@ -291,7 +291,7 @@ async def download_and_upload_file(client, callback_query):
             remove_directory(user_download_dir)        
 
     except Exception as e:
-        callback_query.message.reply_text(f"Error: {str(e)}")
+        await callback_query.message.reply_text(f"Error: {str(e)}")
 
 # Callback query handler for Help and Close buttons
 @Client.on_callback_query()
